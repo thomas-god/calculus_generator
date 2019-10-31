@@ -1,5 +1,8 @@
 .vscode
 
+# SQLite related
+*.db
+
 # Texlive files
 *.aux
 *.tex

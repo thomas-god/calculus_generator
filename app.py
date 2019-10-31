@@ -1,5 +1,6 @@
 import random
 import os
+import sqlite3
 
 def get_one_set():
     """
@@ -20,11 +21,34 @@ def get_one_set():
     set_n = list(range(-n, n + 1))
     set_n.remove(0)
 
-    return (
-        random.sample(set_n, 1)[0],
-        random.sample(set_n, 1)[0],
-        random.randint(0, 1)
-    )
+    conn = sqlite3.connect('test.db')
+    c = conn.cursor()
+    
+    flag = True
+    while flag:
+        cur_set = (
+            random.sample(set_n, 1)[0],
+            random.sample(set_n, 1)[0],
+            random.randint(0, 1)
+        )
+
+        c.execute(f"""
+            SELECT * FROM test
+            WHERE alpha = {cur_set[0]} AND beta = {cur_set[1]} AND xi = {cur_set[2]};
+        """)
+        if len(c.fetchall()) == 0:
+            flag = False
+
+    print(cur_set)
+
+    c.execute("""
+        INSERT INTO test (alpha, beta, xi)
+        VALUES (?,?,?);
+    """, cur_set)
+
+    conn.commit()
+    conn.close()
+    return cur_set
 
 def get_multi_set(n_set_max):
     """
@@ -95,8 +119,30 @@ def add_latex_math(doc, expr):
         + f"\\item ${expr}$\n"
     )
 
+def init_db():
+    """
+    If no database exists, create it along with the table 
+    for storing previously generated sets.
+    """
+    conn = sqlite3.connect('test.db')
+    c = conn.cursor()
+
+    c.execute("DROP TABLE IF EXISTS test;")
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS test(
+            alpha TINYINT,
+            beta TINYINT,
+            xi TINYINT,
+            PRIMARY KEY (alpha, beta, xi)
+        );
+    """)
+    conn.commit()
+    conn.close()
+
 
 if __name__ == '__main__':
+    init_db()
+    
     doc = get_latex_start()
     
     for i in range(10):
@@ -107,5 +153,4 @@ if __name__ == '__main__':
     with open('doc.tex', 'w') as f:
         f.write(doc)
     
-    os.system("pdflatex doc.tex")
-    
+    #os.system("pdflatex doc.tex")
