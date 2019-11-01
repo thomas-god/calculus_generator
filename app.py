@@ -1,4 +1,5 @@
 import random
+import subprocess
 import os
 import sqlite3
 from gen_db import init_db, insert_parenthesis
@@ -132,4 +133,5 @@ if __name__ == "__main__":
     with open("doc.tex", "w") as f:
         f.write(doc)
 
-    os.system("pdflatex doc.tex")
+    with open(os.devnull, "wb") as devnull:
+        subprocess.call(["pdflatex", "doc.tex"], stdout=devnull)
