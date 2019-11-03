@@ -3,7 +3,7 @@ import subprocess
 import os
 import sqlite3
 from gen_db import init_db, insert_parenthesis
-from resoudre import get_eq_deg1
+from resoudre import get_eq_deg1, get_eq_deg2
 
 
 def get_one_set():
@@ -136,6 +136,8 @@ if __name__ == "__main__":
     doc += "\\begin{itemize}\n"
     for i in range(3):
         doc = add_latex_math(doc, get_eq_deg1())
+    for i in range(10):
+        doc = add_latex_math(doc, get_eq_deg2())
     doc += "\\end{itemize}\n"
 
     doc = end_latex_doc(doc)
