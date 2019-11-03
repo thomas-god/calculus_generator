@@ -26,8 +26,8 @@ def fmt_deg1(a, b):
     elif b == 0:
         string = f"{a}x"
 
-    string.replace("1x", "x")
-    string.replace("-1x", "-x")
+    string = string.replace("1x", "x")
+    string = string.replace("-1x", "-x")
 
     return string
 
@@ -45,8 +45,8 @@ def fmt_deg2(a, b, c):
     else:
         string = "0"
 
-    string.replace("1x^2", "x^2")
-    string.replace("-1x^2", "-x^2")
+    string = string.replace("1x^2", "x^2")
+    string = string.replace("-1x^2", "-x^2")
 
     return string
 

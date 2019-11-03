@@ -71,8 +71,7 @@ def fmt_one_set(in_set):
     Using an (a, b, xi) tuple, returns the coresponding string
     to form (a*xi + b*xib)
     """
-    in_set = ["" if i == 1 else "-" if i == -1 else i for i in in_set[:2]] + [in_set[2]]
-    return (
+    string = (
         "("
         f"{in_set[0] if in_set[0] != 1 else ''}"
         f"{'x' if in_set[2] else ''}"
@@ -81,6 +80,9 @@ def fmt_one_set(in_set):
         f"{'x' if (1 - in_set[2]) else ''}"
         ")"
     )
+    string = string.replace("1x", "x")
+    string = string.replace("-1x", "-x")
+    return string
 
 
 def fmt_multi_set(mult_set):
@@ -105,6 +107,13 @@ def get_latex_start():
     )
 
 
+def add_title(doc):
+    doc += "\\begin{titlepage}\n"
+    doc += "Lundi 03 novembre\n"
+    doc += "\\end{titlepage}\n"
+    return doc
+
+
 def end_latex_doc(doc):
     """
     Appends the closing Latex syntax to the input doc
@@ -125,18 +134,19 @@ if __name__ == "__main__":
     init_db()
 
     doc = get_latex_start()
+    doc += "\\section*{Lundi 03 novembre}\n"
 
     doc += "\\section{Développer et réduire}\n"
     doc += "\\begin{itemize}\n"
-    for i in range(10):
+    for i in range(15):
         doc = add_latex_math(doc, fmt_multi_set(get_multi_set()))
     doc += "\\end{itemize}\n"
 
     doc += "\\section{Résoudre}\n"
     doc += "\\begin{itemize}\n"
-    for i in range(3):
-        doc = add_latex_math(doc, get_eq_deg1())
     for i in range(10):
+        doc = add_latex_math(doc, get_eq_deg1())
+    for i in range(5):
         doc = add_latex_math(doc, get_eq_deg2())
     doc += "\\end{itemize}\n"
 
