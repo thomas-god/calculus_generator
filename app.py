@@ -3,6 +3,7 @@ import subprocess
 import os
 import sqlite3
 from gen_db import init_db, insert_parenthesis
+from resoudre import get_eq_deg1
 
 
 def get_one_set():
@@ -99,8 +100,8 @@ def get_latex_start():
         "\\documentclass[a4paper]{article}\n"
         "\\usepackage[utf8]{inputenc}\n"
         "\\usepackage[T1]{fontenc}\n"
+        "\\usepackage[margin=2cm]{geometry}"
         "\\begin{document}\n"
-        "\\begin{itemize}\n"
     )
 
 
@@ -109,7 +110,7 @@ def end_latex_doc(doc):
     Appends the closing Latex syntax to the input doc
     represented by a single string.
     """
-    return doc + "\n\\end{itemize}" + "\n\\end{document}"
+    return doc + "\\end{document}"
 
 
 def add_latex_math(doc, expr):
@@ -125,8 +126,17 @@ if __name__ == "__main__":
 
     doc = get_latex_start()
 
+    doc += "\\section{Développer et réduire}\n"
+    doc += "\\begin{itemize}\n"
     for i in range(10):
         doc = add_latex_math(doc, fmt_multi_set(get_multi_set()))
+    doc += "\\end{itemize}\n"
+
+    doc += "\\section{Résoudre}\n"
+    doc += "\\begin{itemize}\n"
+    for i in range(3):
+        doc = add_latex_math(doc, get_eq_deg1())
+    doc += "\\end{itemize}\n"
 
     doc = end_latex_doc(doc)
 
@@ -134,4 +144,6 @@ if __name__ == "__main__":
         f.write(doc)
 
     with open(os.devnull, "wb") as devnull:
-        subprocess.call(["pdflatex", "doc.tex"], stdout=devnull)
+        subprocess.call(
+            ["pdflatex", "doc.tex"], stdout=devnull, stderr=subprocess.STDOUT
+        )
